@@ -3,7 +3,7 @@ services:
   frontend:
     build: 
       context: ./frontend
-      docker: Dockefile
+      dockerfile: Dockerfile
     
     ports:
       - "8080:80"
@@ -14,7 +14,7 @@ services:
   backend:
     build:    
       context: ./backend
-      docker: Dockerfile
+      dockerfile: Dockerfile
     environment:
       DB_HOST: database
       DB_PORT: 3306
@@ -33,14 +33,13 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - mysql_data: /var/lib/mysql
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: [ "CMD","mysqladmin","ping","-h","localhost","-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
-
 volumes:
   mysql_data:
 
