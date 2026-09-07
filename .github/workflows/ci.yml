@@ -80,15 +80,15 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
 
-      # Step 7: Push frontend image
+       # Step 7: Push frontend image
       - name: Push frontend image
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           docker tag taskboard-frontend:ci \
-            ghcr.io/${{ github.repository_owner }}/taskboard-frontend:latest
+            ghcr.io/pradhumnaadhikari/taskboard-frontend:latest
 
           docker push \
-            ghcr.io/${{ github.repository_owner }}/taskboard-frontend:latest
+            ghcr.io/pradhumnaadhikari/taskboard-frontend:latest
 
 
       # Step 7: Push backend image
@@ -96,7 +96,7 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           docker tag taskboard-backend:ci \
-            ghcr.io/${{ github.repository_owner }}/taskboard-backend:latest
+            ghcr.io/pradhumnaadhikari/taskboard-backend:latest
 
           docker push \
-            ghcr.io/${{ github.repository_owner }}/taskboard-backend:latest
+            ghcr.io/pradhumnaadhikari/taskboard-backend:latest
