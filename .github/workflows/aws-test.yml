@@ -1,13 +1,29 @@
-name: AWS Connection Test
+name: TaskBoard - Build and Push to ECR
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  build-and-push:
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
 
     steps:
+
+      # 1. Get the source code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -15,7 +31,46 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Test AWS connection
+      # 3. Login to Amazon ECR
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 4. Build frontend Docker image
+      - name: Build frontend image
         run: |
-          aws sts get-caller-identity
-          aws ecr describe-repositories --region us-east-1
+          docker build \
+            -t taskboard-frontend:latest \
+            ./frontend
+
+      # 5. Tag frontend image for ECR
+      - name: Tag frontend image
+        run: |
+          docker tag \
+            taskboard-frontend:latest \
+            265020546803.dkr.ecr.us-east-1.amazonaws.com/taskboard-frontend:latest
+
+      # 6. Push frontend image to ECR
+      - name: Push frontend image
+        run: |
+          docker push \
+            265020546803.dkr.ecr.us-east-1.amazonaws.com/taskboard-frontend:latest
+
+      # 7. Build backend Docker image
+      - name: Build backend image
+        run: |
+          docker build \
+            -t taskboard-backend:latest \
+            ./backend
+
+      # 8. Tag backend image for ECR
+      - name: Tag backend image
+        run: |
+          docker tag \
+            taskboard-backend:latest \
+            265020546803.dkr.ecr.us-east-1.amazonaws.com/taskboard-backend:latest
+
+      # 9. Push backend image to ECR
+      - name: Push backend image
+        run: |
+          docker push \
+            265020546803.dkr.ecr.us-east-1.amazonaws.com/taskboard-backend:latest
