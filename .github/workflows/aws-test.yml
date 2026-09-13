@@ -16,4 +16,6 @@ jobs:
           aws-region: us-east-1
 
       - name: Test AWS connection
-        run: aws sts get-caller-identity
+        run: |
+          aws sts get-caller-identity
+          aws ecr describe-repositories --region us-east-1
