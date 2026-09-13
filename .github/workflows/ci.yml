@@ -62,31 +62,4 @@ jobs:
       - name: Build backend Docker image
         run: docker build -t taskboard-backend:ci ./backend
 
-      # Step 9: Login to GitHub Container Registry
-      - name: Login to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # Step 10: Push frontend image
-      - name: Push frontend image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          docker tag taskboard-frontend:ci \
-            ghcr.io/pradhumnaadhikari/taskboard-frontend:latest
-
-          docker push \
-            ghcr.io/pradhumnaadhikari/taskboard-frontend:latest
-
-      # Step 11: Push backend image
-      - name: Push backend image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          docker tag taskboard-backend:ci \
-            ghcr.io/pradhumnaadhikari/taskboard-backend:latest
-
-          docker push \
-            ghcr.io/pradhumnaadhikari/taskboard-backend:latest
+     
